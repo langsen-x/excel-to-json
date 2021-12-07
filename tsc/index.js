@@ -273,11 +273,15 @@ class Gen extends Json {
                 }
                 else if (idx !== 0 && idx !== results.length - 1) {
                     const tempGroup = [];
-                    const lastGroup = groupObj[idx - 1];
                     for (let [key, value] of Object.entries(Object.assign({}, res))) {
                         if (Array.isArray(value)) {
                             value.map((v) => {
-                                v.children = lastGroup[v[finalF['group']]];
+                                if (idx === 1) {
+                                    v.children = groupObj[idx - 1][v[finalF['group']]];
+                                }
+                                else {
+                                    v.children = Object.fromEntries(groupObj[idx - 1])[v[finalF['group']]];
+                                }
                             });
                             tempGroup.push([key, value]);
                         }
