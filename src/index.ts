@@ -1,3 +1,5 @@
+import {randomUUID} from "crypto";
+
 const path = require('path')
 const fs = require('fs')
 const xlsx = require('node-xlsx')
@@ -312,7 +314,9 @@ class Gen extends Json {
                 } else {
                     const final = [].concat(res)
                     final.map((f: any) => {
-                        f.children = Object.fromEntries(groupObj[idx - 1])[f[finalF['group']]]
+                        f.value = randomUUID().replace(/-/g, '')
+                        // f.children = Object.fromEntries(groupObj[idx - 1])[f[finalF['group']]]
+                        f.children = groupObj[idx - 1][f[finalF['group']]]
                     })
                     writeJson(path.join(this.saveJsonDir, `/gen.json`), final)
                 }
@@ -336,6 +340,8 @@ class Gen extends Json {
         function groupBy(list: Array<any>, fn: any, handleFields = {}, extFields = []) {
             const groups: any = {}
             list.forEach((item: any) => {
+                item.value = randomUUID().replace(/-/g, '')
+                item.status = '0'
                 const group = fn(item)
                 groups[group] = groups[group] || []
                 groups[group].push(item)

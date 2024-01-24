@@ -1,36 +1,42 @@
 const {Gen, excelToJson} = require('../lib/index.cjs.js');
-let oldF = ['class1', 'class2', 'describe', 'classValue'];
-let newF = ['class1', 'class2', 'describe', 'classValue'];
+const {randomUUID} = require("crypto");
+let oldF = ['type', 'project', 'num', 'A', 'B', 'C', 'D', 'E', 'F', 'answer', 'describe', 'level', 'score'];
+let newF = ['type', 'project', 'num', 'A', 'B', 'C', 'D', 'E', 'F', 'answer', 'describe', 'level', 'score'];
 const finalF = {
-    par1: 'text',
+    par1: 'label',
     // par2: 'code'
-    group: 'text',
+    group: 'label',
 };
 const groupJson = [
+    // {
+    //     objKey: ['describe'],
+    //     groupF: 'class2',
+    //     type: 'group',
+    //     ext: ['classValue']
+    // },
     {
-        objKey: ['describe'],
-        groupF: 'class2',
+        objKey: ['project'],
+        groupF: 'type',
         type: 'group',
-        ext: ['classValue']
+        ext: ['num', 'A', 'B', 'C', 'D', 'E', 'F', 'answer', 'describe', 'level', 'score']
     },
     {
-        objKey: ['class2'],
-        groupF: 'class1',
-        type: 'group',
-        ext: []
-    },
-    {
-        objKey: ['class1'],
+        objKey: ['type'],
         groupF: '',
         type: 'unique',
         ext: []
     }
 ];
 const isOldEqNew = JSON.stringify(oldF) === JSON.stringify(newF);
-let gen = new Gen(oldF, newF, './test/parse.xlsx');
+// const isOldEqNew = false;
+let gen = new Gen(oldF, newF, 'D://MyProjects//excel-to-json//test//附件3：2023年全警实战大练兵理论题（解析版）.xls', {
+    sheetIndex: 0,
+    headLocation: 1,
+    startLocation: 2
+});
 gen.setFItem(finalF);
 gen.setGroupConfig(groupJson);
-gen.setSaveJsonDir('D://MyProjects//excel-to-json//test/toJson');
+gen.setSaveJsonDir('D://MyProjects//excel-to-json//test/2023年全警实战大练兵理论题Json');
 
 // 重写方法（genOriginJsonData使用），多处理newF与oldF数量不一致的情况
 function execGenOrigin(rows, isSame) {
@@ -48,6 +54,8 @@ function execGenOrigin(rows, isSame) {
                 json[oldF[i]] = (row[i] || '').toString();
             }
         }
+        // json.value = randomUUID().replace(/-/g, '')
+        // json.status = '0'
         originJsonData.push(json);
     });
     if (!isSame) { // 如果不相等，必须重写
